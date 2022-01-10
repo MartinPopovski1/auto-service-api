@@ -8,7 +8,12 @@ function routes(Invoice, AutoPart) {
     const stockControl = stockController(AutoPart)
     invoiceRouter.route('/')
         .post((req, res) => {
-            stockControl.reduceUsedAutoPartsInStock(req.body.autoPartsFromStock);
+            console.log(req.body)
+            if(req.body && req.body.invoiceDocumentType === 'invoice' && req.body.autoPartsFromStock && req.body.autoPartsFromStock.length) {
+                let isItemInStock = stockControl.reduceUsedAutoPartsInStock(req.body.autoPartsFromStock, req, res);
+                console.log(isItemInStock)
+                if(!isItemInStock) return
+            }
             invoiceControl.post(req, res);
         })
         .get(invoiceControl.getAll);

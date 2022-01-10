@@ -23,9 +23,12 @@ function stockController(AutoPart) {
         });
     }
     function reduceUsedAutoPartsInStock(invoiceAutoPartList, req, res) {
+        console.log(invoiceAutoPartList)
         if(invoiceAutoPartList && invoiceAutoPartList.length) {
             invoiceAutoPartList.forEach(autoPart => {
-                AutoPart.findOne({name: autoPart.name }, function(err, dbAutoPart) {
+                console.log(autoPart)
+                AutoPart.findOne({name: autoPart.name, brand: autoPart.brand }, function(err, dbAutoPart) {
+                    console.log(dbAutoPart)
                     if(err) {
                         return false;
                     }
@@ -35,16 +38,19 @@ function stockController(AutoPart) {
                             res.status(400);
                             return res.send('Нема доволно од делот: ' + dbAutoPart.name + ' во магацин');
                         }
-                        dbAutoPart.quantity = quantityNumber.toString();
-                        dbAutoPart.save((err) => {
-                            console.log(err);
-                            return !err;
-                        })
+                        else {
+                            dbAutoPart.quantity = quantityNumber.toString();
+                            dbAutoPart.save((err) => {
+                                console.log(err);
+                                return !err;
+                            })
+                        }
                     }
                     return false;
                 });
             })
         }
+        return false;
 
     }
 
